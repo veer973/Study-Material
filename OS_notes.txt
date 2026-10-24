@@ -1,0 +1,1283 @@
+Introduction to Operating Systems
+# 1. Application Software vs System Software
+### Application software
+Application software is software designed primarily to perform a task for the **end user**.
+Examples:
+* Chrome → browsing
+* VS Code → programming
+* MS Word → document editing
+Think:
+```text
+User
+  ↓
+Application
+  ↓
+OS
+  ↓
+Hardware
+The application doesn't normally directly control the hardware.
+---
+#### System Software
+**System software** manages/controls the computer and provides the environment required for application software to execute.
+Examples include:
+* Operating systems
+* Device drivers
+* Firmware
+The most important system software for your OS course is obviously the **Operating System**.
+What is an Operating System?
+> **An operating system is a piece of software that manages all the resources of a computer system, both hardware and software, and provides an environment in which the user can execute his/her programs in a convenient and efficient manner by hiding underlying complexity of the hardware and acting as a resource manager.**
+Break it into **5 major ideas**:
+Operating System
+       │
+       ├── 1. Manages resources
+       │
+       ├── 2. Provides execution environment
+       │
+       ├── 3. Hides hardware complexity
+       │
+       ├── 4. Provides convenience + efficiency
+       │
+       └── 5. Provides protection/isolation
+```
+Let's understand each.
+---
+OS as a Resource Manager
+A computer has limited resources:
+### Hardware resources
+* CPU
+* RAM
+* Storage
+* Network
+Multiple programs may want these resources simultaneously.
+For example:
+```text
+              CPU
+               ↑
+       ┌───────┼────────┐
+       │       │        │
+     Chrome   VS Code  Spotify
+```
+Who decides which program gets CPU time?
+Who manages RAM?
+Who decides which process can access a file?
+Who manages access to devices?
+**The OS.**
+Therefore:
+> **The OS acts as a resource manager.**
+---
+What does "resource management" actually mean?
+Resource management involves things like:
+### Allocation
+Deciding **who gets a resource**.
+Example:
+Suppose 3 processes want CPU time:
+```text
+P1 → CPU
+P2 → CPU
+P3 → CPU
+```
+The CPU can execute only a limited number of instructions at a time per core.
+The OS scheduler decides which process gets CPU time.
+---
+### Arbitration
+Arbitration means **resolving competition between programs for shared resources**.
+Example:
+Two programs want to write to the same printer:
+```text
+Chrome ──┐
+         ├──→ Printer
+Word ────┘
+```
+You don't want both programs sending data randomly at the same time.
+The OS controls access.
+That's **arbitration**.
+# 6. Why do we need an OS?
+There are several problems without OS.
+## 6.1 Applications become extremely complex
+> **Bulky and complex application. Hardware interaction code must be in application's code base.**
+# 7. OS hides hardware complexity
+This is called **abstraction**.
+> **Hides the underlying complexity of the hardware. (Aka, Abstraction)**
+## What is abstraction?
+> **Expose a simpler interface while hiding unnecessary implementation details.**
+
+example: Memory abstraction
+Suppose you write:
+```c
+int x = 10;
+```
+You don't normally tell the program:
+> "Put this integer into physical RAM address 0x7A3F...."
+Instead, the OS provides each process with a **virtual address space**.
+
+# 10. Resource Exploitation by One Application
+**Resource exploitation by 1 App.**
+This means that without an OS, one application could potentially **consume/control resources without proper coordination with other applications**.
+Imagine:
+RAM = 16 GB
+Application A → tries to use all 16 GB
+Application B → needs 2 GB
+Application C → needs 1 GB
+```
+Without proper resource management, A could interfere with B and C.
+
+# 11. Memory Protection
+This is another major reason an OS is needed.
+Imagine two applications:
+```text
+Application A
+Memory: 1000–1999
+Application B
+Memory: 2000–2999
+```
+Suppose A tries to write:
+```text
+Address = 2500
+```
+That belongs to B.
+If applications could freely access arbitrary physical memory:
+```text
+A ────────X────→ B's memory
+```
+A could corrupt B.
+That's disastrous.
+The OS, together with hardware mechanisms such as the **MMU**, provides memory protection.
+
+Conceptually:
+```text
+Process A
+   ↓
+Virtual memory
+   ↓
+Allowed memory
+
+Process B
+   ↓
+Virtual memory
+   ↓
+Allowed memory
+```
+A normally cannot simply access B's memory.
+
+If it attempts an illegal access, the hardware/OS can generate an exception, commonly resulting in something like a segmentation fault.
+
+# 12. Protection vs Isolation
+
+### Isolation
+One process is kept separate from another.
+```text
+Process A     Process B
+   │              │
+   │              │
+   ▼              ▼
+Memory A       Memory B
+```
+A shouldn't arbitrarily modify B's memory.
+
+### Protection
+The system prevents unauthorized access to resources.
+For example:
+```text
+User A → allowed to read file.txt
+User B → denied
+```
+So:
+> **Isolation keeps entities separated.**
+> **Protection controls who can access what.**
+---
+
+# 13. What is an OS made up of?
+It consists of many components.
+For example, a modern OS contains mechanisms/components related to:
+* Process management
+* CPU scheduling
+* Memory management
+* File systems
+* Device management
+* Networking
+* Security
+* System calls
+* Drivers
+* I/O management
+
+The **kernel** is the central part.
+A simplified view:
+
+```text
+Applications
+     ↓
+System libraries / APIs
+     ↓
+System calls
+     ↓
+Kernel
+ ┌───────────────┐
+ │ Process Mgmt  │
+ │ Memory Mgmt   │
+ │ File System   │
+ │ I/O Mgmt      │
+ │ Networking    │
+ │ Security      │
+ └───────────────┘
+     ↓
+Hardware
+```
+OS is the software system that manages resources and provides services/interfaces to applications; the **kernel** is its privileged core.
+---
+
+# 14. Functions of an Operating System
+## Function 1: Access to computer hardware
+Applications need hardware.Applications generally don't directly control hardware.
+Instead:
+```text
+Application
+     ↓
+OS
+     ↓
+Driver / Kernel mechanism
+     ↓
+Hardware
+```
+The OS provides controlled access.
+---
+Function 2: Interface between user and computer hardware
+The OS provides an interface through which users interact with the computer.
+There are two common forms:
+### GUI — Graphical User Interface
+### CLI — Command Line Interface
+User
+ ↓
+GUI / CLI
+ ↓
+Operating System
+ ↓
+Hardware
+
+Function 3: Resource Management / Arbitration
+Function 4: Abstraction
+
+# 19. Important OS abstractions
+
+### CPU abstraction → Process / Thread
+Instead of thinking:
+> "CPU executes these raw instructions."
+We think:
+> "This process is executing."
+---
+## Physical memory abstraction → Virtual memory
+Instead of:
+> "Application directly owns physical RAM."
+We think:
+> "Each process has its own virtual address space."
+---
+### Storage hardware abstraction → File
+Instead of:
+> "Read physical disk sectors."
+We think:
+```text
+open("notes.txt")
+read(...)
+write(...)
+close(...)
+```
+---
+### Network hardware abstraction → Socket
+Instead of controlling network hardware directly:
+```text
+socket()
+connect()
+send()
+recv()
+```
+The OS provides the abstraction.
+---
+
+# 20. Function 5: Isolation and Protection
+Why isolation matters
+Imagine you're running:
+```text
+Chrome
+VS Code
+Spotify
+```
+Chrome crashes.
+Ideally:
+```text
+Chrome → CRASH
+VS Code → continues
+Spotify → continues
+```
+Not:
+```text
+Chrome → CRASH
+             ↓
+Entire computer → CRASH
+```
+Isolation helps contain failures.
+Similarly, malicious or buggy applications should not be able to freely modify:
+* another process's memory
+* kernel memory
+* protected files
+* hardware state
+
+---
+
+# 22. The diagram at the bottom
+
+Your notes show:
+
+```text
+          User
+           ↓
+ ┌─────────────────────┐
+ │   Application       │
+ │      Programs       │
+ ├─────────────────────┤
+ │ Operating System    │
+ ├─────────────────────┤
+ │ Computer Hardware   │
+ └─────────────────────┘
+```
+
+# 23. Why can't applications just directly access hardware?
+Because that would create major problems.
+Imagine two applications directly controlling a disk:
+```text
+Application A ─────→ Disk
+Application B ─────→ Disk
+```
+Both could potentially issue conflicting operations.
+Similarly:
+```text
+Application A ─────→ RAM
+Application B ─────→ RAM
+```
+A could overwrite B's memory.
+Instead:
+```text
+Application A ──┐
+Application B ──┼──→ OS ──→ Hardware
+Application C ──┘
+```
+The OS acts as the controlled intermediary.
+---
+
+
+# What happens if there is NO OS?
+This is worth knowing for interviews.
+Imagine a computer with no operating system.
+You could theoretically write software directly for the hardware, but then your application would have to handle things such as:
+```text
+CPU
+Memory
+Storage
+Devices
+Input/output
+Hardware-specific interfaces
+Resource coordination
+Protection
+```
+Suppose you want three applications:
+```text
+Browser
+Music Player
+Text Editor
+```
+Without a general-purpose OS, you'd need mechanisms to manage:
+```text
+CPU sharing
+Memory
+Storage
+Input
+Output
+Devices
+Protection
+```
+
+You would effectively start building many OS-like mechanisms yourself.
+Therefore the OS provides a **common, controlled environment** in which applications can run.
+---
+Types of Operating Systems — Complete Understanding
+Types of Operating Systems
+│
+├── 1. Single-process OS
+├── 2. Batch-processing OS
+├── 3. Multiprogramming OS
+├── 4. Multitasking OS
+├── 5. Multiprocessing OS
+├── 6. Distributed OS
+└── 7. Real-Time OS
+```
+They describe **different ways of organizing computation, CPU usage, resources, and timing**.
+
+Single-Process OS --> **Only one process/task is executed at a time in the system's execution model.**
+## Imagine this
+You have:
+Ready Queue
+P1
+P2
+P3
+P4
+
+A simple single-process system executes:
+
+P1
+ ↓
+finish
+ ↓
+P2
+ ↓
+finish
+ ↓
+P3
+ ↓
+finish
+ ↓
+P4
+There isn't the modern style of continuously sharing CPU time among multiple independent applications.
+
+## Major limitation
+Suppose P1 needs disk I/O.
+
+P1
+ ↓
+requests disk
+ ↓
+WAITING
+
+CPU
+ ↓
+IDLE
+That's a major inefficiency.
+
+# 3. Batch-Processing OS
+Historically, users would prepare jobs using things such as **punched cards**.
+The workflow was roughly:
+
+User 1 → Job 1 ──┐
+User 2 → Job 2 ──┤
+User 3 → Job 3 ──┤
+User 4 → Job 4 ──┘
+                   ↓
+                Operator
+                   ↓
+             Form batches
+                   ↓
+                 OS
+                   ↓
+             Execute jobs
+
+# 4. What is a "job"?
+A **job** is a unit of work submitted to the computer for execution.
+For example:
+Job 1 → Generate payroll
+Job 2 → Calculate taxes
+Job 3 → Generate bank statement
+Job 4 → Produce monthly report
+These jobs can be collected together.
+
+# 5. What is a batch?
+Suppose the operator collects:
+Job 1
+Job 2
+Job 3
+and groups them into: Batch 1
+Another group:
+Job 4
+Job 5
+Job 6
+becomes: Batch 2
+Then the computer processes the batch.
+
+Conceptually:
+
+```text
+Batch 1
+├── Job 1
+├── Job 2
+└── Job 3
+
+        ↓
+
+Computer processes them
+Why was batch processing needed?
+Early computers were extremely expensive resources.You didn't want the CPU/computer sitting around while a human manually prepared each next job.
+Instead:
+Collect many jobs
+      ↓
+Prepare them
+      ↓
+Submit them together
+      ↓
+Computer processes them automatically.This reduced the need for continuous human interaction.
+# The big characteristic of batch processing
+The user generally **doesn't interact with the job while it is executing**.
+
+# 10. "May lead to waiting time / queueing delay"
+> "A batch may take more time to complete."
+Suppose:
+Batch 1 → 10 hours
+Batch 2 → 5 minutes
+Batch 3 → 2 minutes
+If Batch 1 is processed first:
+Batch 1
+  ↓
+10 hours
+  ↓
+Batch 2
+  ↓
+Batch 3
+Batch 2 and Batch 3 experience a long delay.
+
+#### CPU may become idle in batch processing
+> "CPU may become idle in case of I/O operations."
+
+Suppose:
+Job 1:
+CPU → Disk I/O → CPU
+During: Disk I/O. the CPU may have nothing else useful to execute if the system is not multiprogrammed.
+Therefore:
+CPU:
+██████        ██████
+      IDLE
+This leads directly to **multiprogramming**.
+
+# 12. Multiprogramming OS
+> "Multiprogramming increases CPU utilization by keeping multiple jobs (code and data) in memory so that the CPU always has some job to execute in case some job gets busy with I/O."
+
+# 13. Why does multiprogramming work?
+Suppose:
+P1 → running
+P2 → ready
+P3 → ready
+P1 starts executing:
+P1 → CPU
+Then P1 requests disk I/O:
+P1 → WAITING
+Instead of:
+CPU → IDLE ❌
+the OS runs:
+P2 → CPU
+Then perhaps:
+P2 → CPU
+P2 → I/O wait
+P3 → CPU
+When P1's I/O finishes:
+P1 → READY
+and it can eventually execute again.
+# 14. The classic multiprogramming diagram
+             RAM
+┌────────────────────────┐
+│ Operating System       │
+├────────────────────────┤
+│ Program P1 + data      │
+├────────────────────────┤
+│ Program P2 + data      │
+├────────────────────────┤
+│ Program P3 + data      │
+└────────────────────────┘
+
+             ↓
+
+            CPU
+Multiple programs are kept in memory.Only one may execute at a time on a **single CPU core**, but the OS switches between them when necessary.
+### Why does the program need both "code and data"?
+A program consists of instructions/code and associated data.
+For example:
+total = price * quantity
+The program needs:
+Instructions: multiply price × quantity
+And
+Data: price , quantity , total
+If multiple programs are to be ready for execution, their relevant memory contents must be available.
+
+### Single CPU in multi programming.
+Imagine:
+CPU
+ |
+ ├── P1
+ ├── P2
+ └── P3
+The CPU doesn't literally execute all three simultaneously.
+Instead: P1 → P2 → P3 → P1 → P2 ...
+The OS controls which process runs.
+
+###Context switching in multiprogramming
+Suppose: P1 is executing and P1 starts waiting for I/O. Then OS must switch to P2.
+Conceptually:
+P1 running
+   ↓
+Save P1's CPU state
+   ↓
+Load P2's CPU state
+   ↓
+P2 running
+This is a **context switch**.
+
+# 18. What is the "context" of a process?
+The context is essentially the information required to resume the process correctly.
+It can include: * Program Counter * CPU registers * Stack pointer * Processor state * Other architecture/process-specific state
+### "Switch happens when current process goes to wait state"
+That's an important case, but don't interpret it as the **only** reason a context switch happens.
+A process can switch out because: * It waits for I/O. * It blocks for another event/resource. * Its time slice expires in a preemptive system. * It terminates. * A higher-priority process may need to run, depending on the scheduler.
+CPU idle time is reduced, This is the major benefit of multiprogramming.
+
+### 22. Multitasking OS
+> "Multitasking is a logical extension of multiprogramming." It also have Single CPU.
+In multitasking, the OS rapidly switches the CPU between processes/tasks, typically using time slices (time quantum).
+Time →
+─────────────────────────────────────>
+Spotify   | VS Code | Terminal | Spotify | VS Code | ...
+   10ms       10ms      10ms       10ms      10ms
+So:
+Spotify gets CPU for a small time.
+OS switches to VS Code.
+Then Terminal.
+Then back to Spotify.
+This happens very rapidly.
+Because switching happens so quickly, you perceive all three applications as running simultaneously.
+
+> **Concurrency ≠ Parallelism** Concurrency is about multiple tasks making progress during the same period, whereas parallelism is about multiple tasks executing at the exact same time.
+|                       | Concurrency                    | Parallelism                             |
+| --------------------- | ------------------------------ | --------------------------------------- |
+| Meaning               | Multiple tasks make progress   | Multiple tasks execute simultaneously   |
+| CPU cores required?   | **No**                         | Usually **yes**                         |
+| Single-core possible? | ✅ Yes                          | ❌ No                                    |
+| Main mechanism        | Context switching/interleaving | Multiple cores executing simultaneously |
+| Example               | Spotify ↔ VS Code ↔ Terminal   | Core 1: Spotify, Core 2: VS Code        |
+
+
+### Multitasking uses context switching and time sharing
+
+But don't think multitasking's primary definition is "reducing idle time." Its key characteristic is **sharing CPU execution among multiple tasks**, especially for interactive systems.
+
+---
+
+# 29. Multiprogramming vs Multitasking — absolutely know this
+
+This is a classic placement question.
+
+| Feature           | Multiprogramming                     | Multitasking                         |
+| ----------------- | ------------------------------------ | ------------------------------------ |
+| Main idea         | Multiple programs kept in memory     | Multiple tasks share CPU             |
+| Main objective    | Maximize CPU utilization             | Responsiveness + concurrent progress |
+| CPU               | Can be single CPU                    | Can be single CPU                    |
+| Context switching | Yes                                  | Yes                                  |
+| Time sharing      | Not necessarily the defining feature | Common                               |
+| Interactive focus | Lower                                | Higher                               |
+| Example scenario  | P1 waits for I/O → run P2            | P1/P2/P3 each get time slices        |
+
+### Memory trick
+MULTIPROGRAMMING→ "Keep CPU busy."
+MULTITASKING→ "Keep multiple tasks moving."
+
+### Multiprocessing OS
+> **"Multi-processing OS, more than 1 CPU in a single computer."**
+That's the central idea.
+A multiprocessing system has multiple processing units, commonly multiple CPU cores.
+For example:
+Computer
+│
+├── Core 1
+├── Core 2
+├── Core 3
+└── Core 4
+The OS can schedule work across them.
+Suppose:
+P1
+P2
+P3
+P
+and four cores:
+Core 1 → P1
+Core 2 → P2
+Core 3 → P3
+Core 4 → P4
+These can execute simultaneously.
+That's **parallelism**.
+---
+A modern laptop can be: Multiprocessing + Multitasking + Multiprogramming
+because it has multiple cores and runs many processes.
+
+# Distributed Operating System
+A **Distributed Operating System (Distributed OS)** is an operating system designed to manage and coordinate a collection of **independent computers (nodes)** connected through a network. Each computer has its own processor, memory, storage, and other resources, but the distributed OS coordinates these resources and allows the computers to work together as a unified system.
+In a distributed system, the individual computers are **autonomous**, meaning each machine can perform its own computation independently. However, they are connected through a network and communicate with each other to share resources and perform tasks.
+The main goal of a Distributed OS is to provide **resource sharing, workload distribution, scalability, and efficient utilization of resources** across multiple computers. A large task can be divided into smaller tasks and distributed among different machines. For example, if a task contains 1 million operations, the work could be divided among several computers so that different machines process different portions of the task simultaneously.
+A Distributed OS attempts to provide users with the **illusion of a single unified system**, even though the underlying computation is being performed by multiple independent machines. The user or application does not necessarily need to know which particular machine is performing a particular part of the task.
+For example, consider three computers connected through a network:
+Computer A ─────┐
+                │
+Computer B ─────┼──── Network
+                │
+Computer C ─────┘
+Each computer has its own CPU and memory:
+Computer A → CPU + RAM + Storage
+Computer B → CPU + RAM + Storage
+Computer C → CPU + RAM + Storage
+The Distributed OS coordinates these machines so that they can cooperate and share their resources.
+### Main Characteristics of Distributed OS
+A Distributed OS consists of multiple **autonomous nodes** connected through a network. Each node has its own local resources, but the nodes communicate and cooperate with one another. The system supports **resource sharing**, allowing computers to share processing power, storage, files, and other resources. It also supports **workload distribution**, where tasks can be divided among multiple machines to improve performance and resource utilization.
+Another important characteristic is **scalability**. Additional computers can potentially be added to the distributed system to increase available computational resources. Distributed systems can also provide improved **reliability and fault tolerance** when designed with redundancy, because the failure of one machine does not necessarily mean that the entire system must stop.
+### Example
+Suppose a company needs to process 10 million records. Instead of using only one computer:
+Computer A → 2.5 million records
+Computer B → 2.5 million records
+Computer C → 2.5 million records
+Computer D → 2.5 million records
+The work can be distributed across the four computers. They can process their assigned portions simultaneously and combine the results.
+### Distributed OS vs Multiprocessing OS
+A **multiprocessing OS** uses multiple processors or CPU cores within a computer:
+One Computer
+ ├── CPU/Core 1
+ ├── CPU/Core 2
+ ├── CPU/Core 3
+ └── CPU/Core 4
+
+A **Distributed OS** works with multiple separate computers:
+Computer A ── Network ── Computer B ── Network ── Computer C
+
+Therefore, the easiest way to remember the difference is:
+> **Multiprocessing = multiple processing units within a computer.**
+> **Distributed OS = multiple independent computers cooperating through a network.**
+### Advantages
+A Distributed OS can provide **resource sharing**, allowing different machines to share computational and storage resources. It can improve **performance and throughput** by distributing workloads across multiple computers. It can also provide **scalability**, because additional machines can be added to the system. With appropriate redundancy, it can improve **reliability and fault tolerance**, because work may be able to continue even if one node fails.
+### Challenges
+Distributed systems are more complicated than systems running on a single computer. Communication between computers introduces **network latency**, and network failures can prevent nodes from communicating. The system also needs mechanisms for **synchronization, coordination, consistency, and handling partial failures**. Because different machines operate independently, maintaining a consistent view of shared resources and data can be difficult.
+### Key Definition
+> **A Distributed Operating System is an operating system that manages and coordinates multiple autonomous computers connected through a network, allowing them to share resources and cooperate in executing tasks as a unified system.**
+
+# Real-Time Operating System (RTOS)
+A **Real-Time Operating System (RTOS)** is an operating system designed for applications where the **correctness of a result depends not only on producing the correct result but also on producing it within a specified time limit**. An RTOS provides predictable and timely responses to events and ensures that important tasks can be completed within their required deadlines.
+The main focus of an RTOS is **deterministic and predictable timing** rather than simply achieving the highest possible speed. In a normal operating system, a task may sometimes experience unpredictable delays because the OS is managing many processes and resources. In a real-time system, such delays may be unacceptable because the system is often controlling or monitoring a physical process that requires a response within a specific time limit.
+For example, consider a robot that detects an obstacle using a sensor. The process may be:
+Sensor detects obstacle
+        ↓
+RTOS receives the event
+        ↓
+Process sensor data
+        ↓
+Decide what to do
+        ↓
+Send command to motor
+Suppose the robot must respond within **20 milliseconds**. If the response occurs in 10 ms, it meets the requirement. If it takes 50 ms, the response may be too late, even if the calculation itself is completely correct.
+Therefore, in a real-time system:
+> **Correct result + correct timing = successful operation.**
+### Real-Time Deadline
+A **deadline** is the maximum time by which a particular task must complete or respond. For example, if a control system requires a response within 10 ms:
+Deadline = 10 ms
+Response at 5 ms  → Meets deadline
+Response at 9 ms  → Meets deadline
+Response at 10 ms → Meets deadline
+Response at 15 ms → Deadline missed
+The importance of the deadline depends on the type of real-time system.
+### Hard Real-Time System
+A **Hard Real-Time System** is a system in which missing a deadline can result in system failure or unacceptable consequences. The system must guarantee that critical tasks complete within their specified deadlines.
+For example, consider a safety-critical control system:
+Sensor event
+     ↓
+Processing
+     ↓
+Control action
+     ↓
+Must happen before deadline
+If the required action is not performed within the specified time, the system may fail to perform its intended function.
+Examples can include certain **aircraft control systems, industrial safety systems, and critical medical or automotive control systems**.
+### Soft Real-Time System
+A **Soft Real-Time System** is a system in which missing an occasional deadline is undesirable but does not necessarily cause complete system failure. The quality of service may decrease when deadlines are missed, but the system can continue operating.
+For example, consider video playback:
+Video frame
+    ↓
+Processing
+    ↓
+Display
+If a frame is processed slightly late, the user may notice a frame drop or temporary degradation, but the entire system does not necessarily fail.
+Examples can include **multimedia, audio/video streaming, and some interactive applications**.
+### RTOS Is Not Simply a Fast Operating System
+An RTOS should not be defined as an operating system that is simply **faster** than a normal OS. The important property is **predictability**.
+For example:
+System A:
+2 ms
+2 ms
+2 ms
+50 ms
+2 ms
+System B:
+5 ms
+5 ms
+6 ms
+5 ms
+5 ms
+Even though System A is usually faster, its 50 ms delay may make it unsuitable when the requirement is to respond within 10 ms. System B has more predictable timing and may be more appropriate for a real-time requirement.
+Therefore:
+> **RTOS focuses on predictable response times and meeting deadlines, not merely maximum speed.**
+### Characteristics of an RTOS
+An RTOS generally provides **predictable scheduling and response times**, allowing critical tasks to receive CPU time when required. It is designed to handle events quickly and predictably and provides mechanisms for prioritizing important tasks. The system is designed so that timing behavior can be analyzed and bounded sufficiently for the application's requirements.
+### Example: Air Traffic Control
+### Advantages of RTOS
+An RTOS provides **predictable response times**, which is essential for systems with strict timing requirements. It can prioritize critical tasks and provide deterministic scheduling behavior. This makes RTOSs suitable for systems involving sensors, actuators, industrial controllers, robotics, automotive systems, and other time-sensitive applications.
+### Key Difference Between Normal OS and RTOS
+A general-purpose OS generally aims to provide good overall performance, responsiveness, fairness, throughput, and resource utilization across many applications.
+**Most important point:** **RTOS ≠ fastest OS. RTOS = predictable timing + meeting required deadlines.**
+
+Process and Thread
+A program is a passive set of instructions stored on secondary storage, such as an SSD or hard disk. When a program is loaded into memory and starts executing, it becomes a process. Therefore, a process can be considered a program in execution. A process has its own execution state and resources, such as program counter, CPU registers, stack, heap, code section, and allocated memory.
+A thread is the smallest unit of CPU execution within a process. A process can contain one or more threads. Each thread has its own program counter, CPU registers, and stack, because these are required to maintain its individual execution state. However, threads belonging to the same process share resources such as the code section, heap, global data, and open files. Because threads share the resources of their process, communication between threads is generally faster than communication between separate processes.
+A process is generally considered a resource-owning unit, while a thread is primarily an execution unit. A process has its own address space, whereas threads of the same process normally operate within the same address space. This makes thread creation and switching cheaper than process creation and switching, although the exact overhead depends on the operating system.
+
+Multitasking
+Multitasking is the ability of an operating system to execute multiple tasks seemingly at the same time. On a single-core CPU, multiple processes cannot actually execute simultaneously. Instead, the operating system rapidly switches the CPU between processes using context switching, creating the appearance of parallel execution. On a multicore CPU, multiple tasks can actually execute simultaneously on different CPU cores.There exist the concept of isolation and memorey protection.here process is been scheduled
+For example, if a user is running a browser, music player, and code editor, the operating system schedules CPU time among these processes. When the CPU switches from one process to another, the state of the currently running process is saved and the state of the next process is restored.
+
+Multithreading
+Multithreading is the execution of multiple threads within the same process. A multithreaded process can divide its work into multiple independent execution paths. Since threads within the same process share the process's memory and resources, they can communicate and exchange data more efficiently than separate processes.There does not exist the concept of isolation and memorey protection.here thread is been scheduled.
+For example, a web browser may use different threads for handling user input, rendering, network operations, and other background tasks. If one thread is waiting for I/O, another thread from the same process can continue executing.
+
+Multitasking vs Multithreading
+The main difference is the unit being executed. Multitasking deals with multiple processes or tasks, whereas multithreading deals with multiple threads within a process. Processes have separate address spaces, while threads belonging to the same process share the process's address space and resources. Because of this sharing, thread creation and thread context switching are generally less expensive than process creation and process context switching.
+Thread Context Switching vs Process Context Switching
+A thread context switch occurs when the CPU stops executing one thread and starts executing another thread. If both threads belong to the same process, the operating system generally does not need to switch to a completely different address space because the threads share the same process memory.
+A process context switch occurs when the CPU stops executing one process and starts executing another process. The operating system must save the execution state of the current process and restore the state of the next process. Since different processes normally have separate address spaces, the switch can also involve changing memory-management information.
+Therefore, thread context switching is generally cheaper than process context switching, especially when switching between threads of the same process. However, the exact cost depends on the operating system, hardware, and whether the threads belong to the same process.
+Important Interview Point
+A common misconception is that a thread has no memory of its own. This is incorrect. Each thread has its own stack, program counter, and CPU registers, while threads within the same process share the heap, code, global data, and other process resources.
+
+# Components of an Operating System
+An operating system is broadly divided into **kernel space** and **user space**. The **kernel** is the core part of the OS that manages hardware and system resources, while user-space programs interact with the kernel to use those resources.
+## 1. Kernel
+The **kernel** is the core component of an operating system that runs with privileged access and manages the system's hardware and resources. It acts as a bridge between applications and hardware. The kernel manages CPU execution, memory, files, devices, and other system resources.
+The kernel is loaded during the system boot process and remains in memory while the system is running. Applications normally cannot directly access hardware; they request services from the kernel through **system calls**.
+### Main Functions of the Kernel
+**Process Management:** The kernel creates and terminates processes and threads, schedules them on CPU cores, performs context switching, and manages their execution states. It also provides mechanisms for processes and threads to communicate and synchronize.
+**Memory Management:** The kernel allocates and deallocates memory for processes and keeps track of which memory regions are being used. It also manages mechanisms such as **virtual memory, paging, and memory protection**.
+**File Management:** The kernel provides operations for creating, deleting, reading, writing, and organizing files and directories. It also manages file-system structures and controls access to stored data.
+**I/O and Device Management:** The kernel manages communication between software and hardware devices such as disks, keyboards, displays, and network interfaces. It uses **device drivers** and mechanisms such as interrupts, buffering, caching, and spooling to handle I/O efficiently.
+### Buffering, Caching and Spooling
+**Buffering** temporarily stores data in memory while it is being transferred between components operating at different speeds. For example, video buffering allows data to be temporarily stored before it is displayed.
+**Caching** stores frequently accessed data in faster storage so that future accesses can be performed more quickly. Examples include CPU caches and web caches.
+**Spooling (Simultaneous Peripheral Operations Online)** stores jobs temporarily so that a slower device can process them sequentially. A common example is **print spooling**, where multiple print jobs are placed in a queue before being sent to the printer.
+---
+# 2. User Space
+**User space** is the area where normal applications and utilities execute without direct privileged access to hardware. Examples include web browsers, text editors, shells, and many system utilities.
+When a user-space application needs a privileged operation—for example, reading a file or creating a process—it requests the kernel through a **system call**. The CPU temporarily switches from user mode to kernel mode to perform the operation and then returns to user mode.
+## Shell
+A **shell** is a command interpreter that provides an interface through which users can execute commands and interact with the operating system.
+For example, when you execute:
+```bash
+mkdir project
+```
+the shell interprets the command and invokes the appropriate operating-system functionality.
+Shells can provide a **CLI (Command-Line Interface)**. A graphical interface such as a desktop environment provides a GUI, but a GUI itself should not be considered the same thing as the kernel.
+# Types of Kernels
+## 1. Monolithic Kernel
+In a **monolithic kernel**, most major OS services run inside kernel space. Components such as process management, memory management, file systems, networking, and device drivers can operate with kernel-level privileges.
+Because these components operate within the kernel, communication between them is generally fast and there is relatively low overhead.
+However, a monolithic kernel can be large and complex. A serious failure in a kernel component can potentially affect the entire operating system because many components share the same privileged environment.
+**Advantages:**
+* High performance because components communicate with relatively low overhead.
+* Most OS services can directly interact within kernel space.
+**Disadvantages:**
+* Large and complex kernel.
+* A serious kernel-level component failure can affect the whole system.
+* Maintaining and debugging a large kernel can be difficult.
+**Examples:** Linux, traditional UNIX systems.
+# 2. Microkernel
+A **microkernel** keeps only the minimum essential functionality inside the kernel. Typically, fundamental mechanisms such as **process/thread scheduling, basic memory management, and inter-process communication (IPC)** remain in kernel space.
+Other services such as device drivers, file systems, and networking can run in **user space** as separate services.
+This design improves **modularity and fault isolation** because a failure in a user-space service does not necessarily bring down the entire kernel.
+However, communication between user-space services and the microkernel can introduce additional overhead because it may involve **IPC and mode/context transitions**.
+**Advantages:**
+* Small kernel.
+* Better modularity.
+* Better fault isolation.
+* Easier to modify or replace individual services.
+**Disadvantages:**
+* IPC and additional transitions can introduce performance overhead.
+* Designing efficient communication between services can be more complex.
+**Examples:** MINIX, QNX, L4.
+# 3. Hybrid Kernel
+A **hybrid kernel** combines ideas from monolithic and microkernel designs. It keeps many performance-critical services in kernel space while maintaining some modularity by separating or structuring components.
+The goal is to obtain the **performance advantages of a monolithic design** while retaining some of the **modularity and isolation principles of microkernels**.
+Examples include the **Windows NT kernel architecture** and **Apple's XNU kernel**, which combines Mach with BSD components and other kernel components.
+# User Mode vs Kernel Mode
+Modern operating systems use different privilege levels to protect the system.
+**User mode** is where normal applications execute. Applications have restricted access and cannot directly perform privileged hardware operations.
+**Kernel mode** is a privileged execution mode in which the operating system kernel can access protected memory, hardware, and system resources.
+For example, when a program wants to read a file, it cannot directly access the disk. It makes a **system call**, causing execution to transition from user mode to kernel mode. The kernel performs the required operation and then returns the result to the application.
+This separation provides **security, stability, and memory protection**. A normal application cannot arbitrarily modify kernel memory or directly control hardware.
+# How Does a User Program Communicate with the Kernel?
+The primary mechanism is a **system call**.
+For example:
+Application
+    ↓
+System Call
+    ↓
+User Mode → Kernel Mode
+    ↓
+Kernel performs operation
+    ↓
+Kernel Mode → User Mode
+    ↓
+Application receives result
+Examples of operations that typically involve system calls include:
+* Creating a process
+* Opening or reading a file
+* Allocating memory
+* Creating a socket
+* Communicating with a device
+The application therefore does **not directly communicate with hardware**. It requests the kernel to perform privileged operations on its behalf.
+# How Do Processes Communicate With Each Other?
+This is a different concept from **user mode ↔ kernel mode communication**.
+Two processes normally have separate address spaces, so one process cannot simply access another process's memory. Operating systems provide **Inter-Process Communication (IPC)** mechanisms for them to exchange information.
+The two major approaches are:
+**Shared Memory:** The OS creates a memory region that multiple processes can access. Once established, processes can communicate through that shared region. Synchronization mechanisms such as mutexes or semaphores may be required to prevent race conditions.
+**Message Passing:** Processes communicate by explicitly sending and receiving messages through OS-provided mechanisms such as pipes, message queues, or sockets.
+### Important Interview Distinction
+Do not mix these two:
+**Application → Kernel:** primarily through **system calls**.
+**Process → Process:** through **IPC**, such as shared memory or message passing.
+## What You Actually Need to Remember for Interviews
+The highest-value points from this topic are:
+* **Kernel = privileged core of the OS.**
+* **User space = where normal applications run.**
+* **System calls = interface between user programs and kernel services.**
+* **Kernel manages CPU, memory, files, and I/O.**
+* **Monolithic kernel → most OS services in kernel space.**
+* **Microkernel → minimum core in kernel; many services in user space.**
+* **Hybrid kernel → combines aspects of both designs.**
+* **User mode provides restricted execution; kernel mode provides privileged execution.**
+* **Buffering ≠ caching ≠ spooling.**
+* **Process-to-process communication uses IPC; application-to-kernel interaction uses system calls.**
+This is the **right depth for placement preparation**: enough to survive the usual "why/how/difference" follow-ups without turning the notes into a university textbook.
+
+# System Calls
+A **system call** is the interface through which a user-space program requests a service from the operating system kernel. Applications normally run in **user mode** and do not have permission to directly perform privileged operations such as accessing hardware, creating processes, or directly managing protected memory. When such an operation is required, the application uses a system call to request the kernel to perform it.
+For example, when a user executes `mkdir test`, the `mkdir` command does not directly manipulate the disk or file system. It requests the operating system to create the directory through the appropriate system-call interface. The kernel performs the privileged file-system operation and returns the result to the program.
+A system call therefore provides a **controlled entry point from user space into kernel space**. The application requests a specific kernel service, the CPU transitions to privileged execution, the kernel performs the requested operation, and control eventually returns to the application in user mode.
+## How an Application Uses a System Call
+An application usually does not directly execute the low-level system-call instruction itself. It commonly uses a **library/API wrapper**, such as functions provided by the C standard library. The library prepares the required arguments and invokes the appropriate system-call mechanism.
+For example:
+```text
+Application
+     ↓
+Library/API function
+     ↓
+System-call interface
+     ↓
+Kernel
+     ↓
+Hardware / OS resource
+```
+For example, a C program may call:
+```c
+mkdir("test", 0755);
+```
+The library/API eventually invokes the appropriate system call, which causes execution to enter the kernel. The kernel then performs the directory-creation operation and returns a result to the application.
+## User Mode to Kernel Mode Transition
+When a system call is invoked, the processor transitions from **user mode to kernel mode** through a controlled mechanism provided by the CPU and operating system. Historically, operating systems commonly used a **software interrupt** for this purpose. Modern processors and operating systems often use dedicated instructions such as `syscall`/`sysret` or `sysenter`/`sysexit`
+A system call is therefore **not the same thing as an ordinary function call**. An ordinary function call generally remains within the same privilege level, whereas a system call provides a controlled transition into the privileged kernel.
+### Important Correction
+Do not memorize:
+> "System calls are the only way the CPU can go from user mode to kernel mode."
+That statement is technically incorrect.
+A transition into kernel/privileged handling can also occur because of **hardware interrupts or exceptions**. A system call is specifically the mechanism used by a user program to **request a kernel service**.
+---
+# System Call Interface
+The **System Call Interface (SCI)** is the boundary through which user-space programs request kernel services. It provides the mechanism for applications or libraries to invoke system calls using the operating system's defined interface.
+For example:
+```text
+User Application
+       ↓
+C Library / API
+       ↓
+System Call Interface
+       ↓
+Kernel
+       ↓
+Hardware
+```
+The exact implementation differs between operating systems and CPU architectures, but the basic purpose remains the same: **provide controlled access to kernel services**.
+---
+# Why Are System Calls Needed?
+Applications are intentionally restricted from directly accessing protected resources. If every application could directly modify memory, control hardware, or access the disk, one faulty or malicious program could interfere with other programs or the operating system.
+System calls allow the kernel to **validate requests, enforce permissions, manage resources, and safely perform privileged operations** on behalf of applications.
+For example, instead of an application directly accessing a disk, it can request:
+```text
+read(file)
+```
+The kernel checks the relevant permissions and file-system information, performs the operation, and returns the requested data.
+# Types of System Calls
+System calls are commonly grouped according to the type of service they provide.
+## 1. Process Control
+**Process-control system calls** are used to create, terminate, execute, and manage processes. They allow programs to start new processes, terminate processes, wait for other processes, and modify process-related attributes.
+Common operations include:
+* Creating a process
+* Terminating a process
+* Loading and executing a program
+* Waiting for a process
+* Allocating and freeing memory
+In Unix-like systems, `fork()` creates a new process, while `exec()` replaces the current process's program image with a new program. This distinction is important: **`fork()` creates a process; `exec()` loads a new program into an existing process.**
+For example:
+Parent Process
+      |
+    fork()
+      |
+      ├── Parent
+      └── Child
+              |
+            exec()
+              |
+        New Program
+`wait()` can be used by a parent process to wait for a child process to finish.
+## 2. File Management
+**File-management system calls** allow programs to interact with files and directories. They provide operations such as creating, opening, reading, writing, closing, deleting, and modifying file attributes.
+Typical Unix/Linux system calls include:
+open()
+read()
+write()
+close()
+unlink()
+For example, when a program wants to read a file, it can use `open()` to obtain access to the file and then use `read()` to retrieve its contents.
+The operating system controls these operations so that applications cannot access files for which they do not have appropriate permissions.
+## 3. Device Management
+**Device-management system calls** allow programs to interact with hardware devices through the operating system. Applications generally do not communicate directly with hardware. Instead, the kernel and device drivers handle the interaction.
+Operations may include requesting or releasing a device, reading from a device, writing to a device, and obtaining or modifying device attributes.
+For example, operations involving terminals, disks, keyboards, network devices, and other hardware can ultimately involve kernel-level device management.
+On Unix-like systems, `ioctl()` is commonly used for device-specific control operations.
+## 4. Information Maintenance
+**Information-maintenance system calls** allow programs to obtain or modify information maintained by the operating system.
+Examples include obtaining:
+* Process IDs
+* System time and date
+* Process attributes
+* File attributes
+* Device information
+For example, `getpid()` on Unix/Linux returns the process ID of the calling process.
+## 5. Communication
+**Communication system calls** provide mechanisms for processes to exchange data and communicate with each other. This is part of **Inter-Process Communication (IPC)**.
+Common mechanisms include:
+* Pipes
+* Shared memory
+* Message queues
+* Sockets
+For example, the Unix `pipe()` system call can create a communication channel between processes. Shared-memory mechanisms allow processes to communicate through a memory region shared between them.
+---
+# Examples of System Calls
+The exact system calls depend on the operating system.
+| Purpose                  | Unix/Linux examples                      | Windows examples                                             |
+| ------------------------ | ---------------------------------------- | ------------------------------------------------------------ |
+| Process creation/control | `fork()`, `exec()`, `exit()`, `wait()`   | `CreateProcess()`, `ExitProcess()`, `WaitForSingleObject()`  |
+| File management          | `open()`, `read()`, `write()`, `close()` | `CreateFile()`, `ReadFile()`, `WriteFile()`, `CloseHandle()` |
+| Device management        | `read()`, `write()`, `ioctl()`           | Device-specific APIs                                         |
+| Information              | `getpid()`, `sleep()`                    | `GetCurrentProcessId()`, `Sleep()`                           |
+| Communication            | `pipe()`, `shmget()`, `mmap()`           | Pipes, file mapping, other IPC APIs                          |
+You do **not** need to memorize every Windows system-call/API name for placements. Know the categories and a few Linux/Unix examples such as `fork()`, `exec()`, `open()`, `read()`, `write()`, `close()`, `wait()`, `pipe()`, and `mmap()`.
+# System Call vs Normal Function Call
+A **normal function call** transfers control to another function within the same privilege level. A **system call** requests a service from the kernel and involves a controlled transition from user mode to kernel mode.
+For example:
+Normal Function Call:
+User Program
+     ↓
+Function
+     ↓
+User Program
+Whereas:
+System Call:
+
+User Program
+     ↓
+Library/API
+     ↓
+System Call
+     ↓
+Kernel Mode
+     ↓
+Kernel Service
+     ↓
+User Mode
+Because a system call involves a privilege transition and kernel processing, it generally has more overhead than an ordinary function call.
+# Important Interview Points
+A **system call is the interface between user-space applications and the kernel**. It allows applications to request privileged OS services without directly accessing protected hardware or kernel resources.
+The five broad categories you should know are **process control, file management, device management, information maintenance, and communication**.
+The most important distinction is:
+> **User program → system call → kernel → requested operation → return to user program.**
+Also remember:
+* `fork()` → creates a new process.
+* `exec()` → replaces the current process's program image.
+* `wait()` → allows a process to wait for another process.
+* `open()` → opens a file and typically returns a file descriptor.
+* `read()` → reads data.
+* `write()` → writes data.
+* `close()` → closes a file descriptor.
+* `pipe()` → provides IPC through a pipe.
+* `mmap()` → maps memory/files into a process's address space.
+This is the **placement-level depth** you want: you should be able to explain **what a system call is, why it exists, how user/kernel transition works, its categories, and common examples**, without memorizing the entire system-call API.
+
+Page no. 11 and LEC -6 additional information for point 3.
+CMOS battery's primary job is to provide continuous power to a small memory chip (the CMOS RAM) that holds your custom system settings and the system clock when the computer is completely unplugged or turned off.
+
+# Introduction to Process
+A **program** is a passive set of instructions stored on secondary storage, such as an SSD or hard disk. A program by itself is not executing; it becomes a **process** when the operating system loads it into memory and starts its execution. Therefore, a **process is a program in execution**.
+## How Does the OS Create a Process?
+When the operating system creates a process, it prepares the program and the resources required for its execution. The general process is as follows.
+First, the OS **loads the program's code and static data into memory**. The code section contains the program instructions, while static/global data contains variables that have a lifetime associated with the program.
+Next, the OS creates the process's **runtime environment**, including the stack. The stack is used for function calls, parameters, return addresses, and local variables.
+The process is also provided with **heap memory**, which is used for dynamically allocated memory during execution. For example, memory requested using `malloc()` in C or dynamic objects created in other languages may be allocated from the heap.
+OS take care of I/O tasks if needed.
+Finally, the OS transfers control to the program's starting point, such as the program's entry point, and the process begins executing.
+# Process Memory Layout
+A process normally has several important memory regions. The exact layout differs between operating systems and architectures, but the conceptual organization is important for interviews.
+```text
+Higher Addresses
++------------------+
+|      Stack       | ← Local variables, function calls
++------------------+
+|                  |
+|       ...        |
+|                  |
++------------------+
+|       Heap       | ← Dynamic memory allocation
++------------------+
+|       Data       | ← Global/static variables
++------------------+
+|       Text       | ← Program instructions
++------------------+
+Lower Addresses
+```
+## Text Section
+The **text section**, also called the **code section**, contains the executable machine instructions of the program. It is normally loaded from the executable file when the process starts.
+The text section is typically made **read-only** so that normal program execution cannot accidentally modify its instructions.
+## Data Section
+The **data section** contains global and static variables that have been initialized.
+These variables have storage associated with the process for its lifetime.
+The data area is commonly discussed as initialized data and, separately, the **BSS section** for uninitialized or zero-initialized global/static variables.
+## Heap
+The **heap** is the memory region used for **dynamic memory allocation** during program execution.
+The memory obtained through `malloc()` comes from dynamically allocated memory managed through the process's heap.
+The heap's size can change during execution as memory is allocated and released.
+## Stack
+The **stack** stores information associated with function execution, including **local variables, function parameters, return addresses, and saved execution information**.
+The parameters and local variables associated with a particular invocation of `fun()` are typically stored in its stack frame.
+Each thread has its **own stack**, which is an important interview point.
+---
+# Process Attributes
+A process has several attributes that the operating system needs to identify and manage it.
+These include information such as:
+* Process ID (PID)
+* Process state
+* Program counter
+* CPU registers
+* Scheduling information
+* Memory-management information
+* Open files
+* I/O information
+* Security/permission information
+The OS maintains this information using a data structure called the **Process Control Block (PCB)**.
+---
+# Process ID
+A **Process ID (PID)** is a unique identifier assigned by the operating system to identify a process.
+For example, in Linux, you can use:
+```bash
+ps
+```
+or:
+```bash
+ps aux
+```
+to view running processes and their PIDs.
+The PID allows the operating system and other programs to refer to a particular process.
+---
+# Process Table
+The operating system needs to keep track of all active processes. It maintains process-related information in a **process table**.
+Conceptually:
+```text
+Process Table
++----------------+
+| PCB - Process 1|
++----------------+
+| PCB - Process 2|
++----------------+
+| PCB - Process 3|
++----------------+
+| PCB - Process 4|
++----------------+
+```
+Each entry contains information required by the OS to manage the corresponding process. The exact implementation varies between operating systems.
+The **PCB is the data structure representing the OS's information about a particular process**.
+---
+# Process Control Block (PCB)
+A **Process Control Block (PCB)** is a kernel data structure that stores the information required by the operating system to manage and control a process.
+A PCB may contain:
+* **Process ID:** uniquely identifies the process.
+* **Process State:** indicates whether the process is ready, running, waiting, etc.
+* **Program Counter:** stores the address of the next instruction to execute.
+* **CPU Registers:** stores the process's current CPU register values.
+* **Scheduling Information:** includes information used by the scheduler, such as priority.
+* **Memory-Management Information:** contains information related to the process's address space and memory management.
+* **Open Files:** tracks files currently opened by the process.
+* **I/O Information:** contains information about I/O resources associated with the process.
+The PCB is critical because the OS needs this information whenever it **schedules, suspends, resumes, or performs a context switch involving the process**.
+---
+# Why Are CPU Registers Stored in the PCB?
+When a process is running, its current execution state exists partly in the CPU's registers.
+Suppose process P1 is executing:
+```text
+P1 → CPU
+```
+Now the scheduler decides to stop P1 and execute P2. Before switching to P2, the OS must preserve P1's execution state.
+The OS saves the relevant register values and other execution information in P1's PCB:
+```text
+CPU Registers
+      ↓
+P1's PCB
+```
+Then the state of P2 is loaded from P2's PCB:
+```text
+P2's PCB
+      ↓
+CPU Registers
+      ↓
+P2 continues execution
+```
+This is a major part of **context switching**.
+Therefore, when P1 gets the CPU again, it can continue from approximately where it stopped rather than starting from the beginning.
+---
+# PCB and Context Switching
+A **context switch** occurs when the CPU stops executing one process/thread and starts executing another.
+For a process switch, the OS saves the current execution context of the running process, including relevant register values and program counter information, into its PCB. It then loads the saved context of the next process from its PCB.
+```text
+P1 Running
+   ↓
+Save P1 context → P1 PCB
+   ↓
+Load P2 context ← P2 PCB
+   ↓
+P2 Running
+```
+The PCB therefore acts as the OS's **saved representation of a process's execution state and other management information**.
+---
+## Important Interview Points
+Remember these distinctions:
+**Program vs Process:**
+A program is a passive set of instructions; a process is a program currently being executed.
+**Process vs PCB:**
+A process is the executing entity. The PCB is the **kernel data structure containing information needed to manage that process**.
+**Process Table vs PCB:**
+The process table is the OS's collection of process entries; each entry corresponds to information about a process, represented conceptually by its PCB.
+**Program Counter vs PID:**
+The **PID identifies the process**, while the **program counter identifies the next instruction to execute**.
+**Stack vs Heap:**
+The stack is primarily associated with function execution and each thread has its own stack. The heap is used for dynamic memory allocation and is generally shared by threads belonging to the same process.
+**Why PCB matters:**
+Without saving process state in structures such as the PCB, the OS could not properly suspend and later resume processes during scheduling and context switching.
+
+|                             | Starvation                          | Convoy Effect                                 |
+| --------------------------- | ----------------------------------- | --------------------------------------------- |
+| Main problem                | One process waits indefinitely      | Many processes experience unnecessary waiting |
+| Typical cause               | Unfair priority/resource allocation | FCFS with long CPU-bound process              |
+| Number affected             | Can be one or more processes        | Usually many short processes                  |
+| Must wait indefinitely?     | **Yes, potentially**                | **No**                                        |
+| Common scheduling algorithm | Priority Scheduling                 | FCFS                                          |
+| Key idea                    | **"I never get a chance."**         | **"I'm stuck behind this long process."**     |
+
+Solution of critical section.? should have this three condition.?
+1. Mutual exclusion  2. progress  3. Bounded Waiting.

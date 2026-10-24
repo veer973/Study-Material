@@ -1,0 +1,39 @@
+What is data isolation.?
+Data isolation is the practice of keeping different sets of data separate from each other to prevent unauthorized access, conflicts, or data corruption
+
+what is integrity problem.? An integrity problem in a traditional file system means the system lacks built-in rules to ensure that stored data is accurate, valid, and consisten
+
+The 6 you should memorize
+| Rule                   | Pattern                                                             |
+| ---------------------- | ------------------------------------------------------------------- |
+| **Reflexivity**        | \(A \supseteq B \Rightarrow A \rightarrow B\)                       |
+| **Augmentation**       | \(A \rightarrow B \Rightarrow AX \rightarrow BX\)                   |
+| **Transitivity**       | \(A \rightarrow B,\ B \rightarrow C \Rightarrow A \rightarrow C\)   |
+| **Union**              | \(A \rightarrow B,\ A \rightarrow C \Rightarrow A \rightarrow BC\)  |
+| **Decomposition**      | \(A \rightarrow BC \Rightarrow A \rightarrow B,\ A \rightarrow C\)  |
+| **Pseudotransitivity** | \(A \rightarrow B,\ CB \rightarrow D \Rightarrow CA \rightarrow D\) |
+
+If **AB is the primary key** of a relation, then **AB must functionally determine every other attribute** in that relation. This is because a primary key uniquely identifies each tuple (row). Therefore, if `AB` is the primary key and the other attributes are `C`, `D`, and `E`, then we can say **AB → C, AB → D, and AB → E**. These can also be combined using the Union rule as **AB → CDE**.
+However, because `AB` is a **composite primary key**, it does **not** mean that `A` alone or `B` alone must determine the other attributes. In general, **A → C** or **B → C** may not hold. The important point is that the **complete primary key `AB` uniquely determines the entire row**.
+
+If:A --> B it means:For every particular value of A, there can be only ONE corresponding value of B.
+
+### Prime Attribute
+A **prime attribute** is an attribute that is part of **at least one candidate key** of a relation.
+### Non-Prime Attribute
+A **non-prime attribute** is an attribute that is **not part of any candidate key**.
+### Example
+Suppose a table has: R(A,B,C,D)
+and the candidate key is:{A,B}
+Then:
+* **A → Prime attribute** ✅
+* **B → Prime attribute** ✅
+* **C → Non-prime attribute** ❌
+* **D → Non-prime attribute** ❌
+Because `A` and `B` are part of the candidate key `{A,B}`.
+### Easy way to remember
+> **Part of a Candidate Key = Prime**
+> **Not part of any Candidate Key = Non-Prime**
+**Important:** It is the **candidate key**, not specifically the primary key, that determines whether an attribute is prime. If an attribute belongs to *any* candidate key, it is prime.
+
+A **checkpoint** in DBMS is a recovery mechanism used to reduce the time required to recover the database after a system crash. During normal execution, the DBMS periodically creates a checkpoint by recording information about the current state of the database and transactions in the log. After a crash, instead of scanning the entire transaction log from the beginning, the recovery process can start from the most recent checkpoint and examine only the relevant transactions after it. The DBMS uses the log to **REDO committed transactions** if their changes were not persisted and **UNDO uncommitted transactions**. Therefore, checkpointing mainly improves the **efficiency of crash recovery** and supports the **Durability** property of ACID.
